@@ -1,4 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import'package:direc_m/pages/DiscoveryPage.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:scoped_model/scoped_model.dart';
+import'package:direc_m/pages/ChatPage.dart';
+
+
+import './DiscoveryPage.dart';
+// import './SelectBondedDevicePage.dart';
 class Test extends StatefulWidget {
 
   @override
@@ -7,6 +20,7 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:Colors.blueGrey,
@@ -41,7 +55,30 @@ class _TestState extends State<Test> {
 
             // ignore: deprecated_member_use
             FlatButton.icon(
-              onPressed: () {
+
+                onPressed: () async {
+                  final BluetoothDevice? selectedDevice =
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return DiscoveryPage();
+                      },
+                    ),
+                  );
+
+                  if (selectedDevice != null) {
+                    print('Connect -> selected ' + selectedDevice.address);
+                    _startChat(context, selectedDevice);
+                  } else {
+                    print('Connect -> no device selected');
+                  }
+
+                  if (selectedDevice != null) {
+                    print('Discovery -> selected ' + selectedDevice.address);
+                  } else {
+                    print('Discovery -> no device selected');
+                  }
+
                 // Navigator.pushNamed(context, '/location');
               },
               icon:Icon(Icons.add_box),
@@ -50,6 +87,15 @@ class _TestState extends State<Test> {
             ),
           ],
         ),
+      ),
+    );
+  }
+  void _startChat(BuildContext context, BluetoothDevice server) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return ChatPage(server: server);
+        },
       ),
     );
   }
