@@ -5,6 +5,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
 
 class ChatPage extends StatefulWidget {
   final BluetoothDevice server;
@@ -24,6 +27,68 @@ class _Message {
 }
 
 class _ChatPage extends State<ChatPage> {
+  var _latitude = "";
+  var _longitude= "";
+  // var _speed= "";
+  // var _address= "";
+  bool _buttonPressed = true;
+
+  Future<void> _updatePosition() async{
+    Position pos =await _determinePosition();
+    List pm= await placemarkFromCoordinates(pos.latitude, pos.longitude);
+    await Geolocator.requestPermission();
+
+    setState(()
+    {
+      _latitude =pos.latitude.toString();
+      _longitude =pos.longitude.toString();
+      // _speed =pos.speed.toString();
+      // _address = pm[0].toString();
+
+    });
+  }
+  void _newLocation() async {
+
+
+    while (_buttonPressed) {
+      // do your thing
+      setState(() {
+        _updatePosition();
+      });
+
+      // wait a second
+      await Future.delayed(Duration(milliseconds: 5000));
+    }
+
+
+  }
+
+
+
+  Future<Position> _determinePosition() async{
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    // if(!serviceEnabled){
+    //   return Future.error('Location permissions are disabled.');
+    // }
+    permission = await Geolocator.checkPermission();
+    if(permission==LocationPermission.denied)
+    {
+      permission=await Geolocator.requestPermission();
+      if(permission==LocationPermission.denied){
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if(permission==LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+  double distanceInMeters = (Geolocator.distanceBetween(29.8638113, 77.8991299, 29.8651142, 77.8999749))/100;
 
   static final clientID = 0;
   BluetoothConnection? connection;
@@ -129,14 +194,41 @@ class _ChatPage extends State<ChatPage> {
       body: Center(
         child: Column(
           children: <Widget>[
-            Flexible(
-              child: ListView(
-                  padding: const EdgeInsets.all(12.0),
-                  controller: listScrollController,
-                  children: list
+
+              const Text(
+              'Your current location is:',
+            ),
+              Text(
+                "Latitude: " +_latitude,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              Text(
+                "Longitude:" +_longitude,
+                style: Theme.of(context).textTheme.headline5,
 
               ),
-            ),
+              // Text(
+              //   "Speed:" +_speed,
+              //   style: Theme.of(context).textTheme.headline5,
+              // ),
+              Text(
+                "Distance:"  +distanceInMeters.toString(),
+                style: Theme.of(context).textTheme.headline5,
+
+              ),
+              //
+              // const Text('Address: '),
+              //
+              //
+              // Text(_address),
+
+              // child: ListView(
+              //     padding: const EdgeInsets.all(12.0),
+              //     controller: listScrollController,
+              //     children: list
+              //
+              // ),
+              SizedBox(height:300.0),
             Row(
               children: <Widget>[
                 // Flexible(
@@ -158,7 +250,7 @@ class _ChatPage extends State<ChatPage> {
                 //   ),
                 // ),
                 // controller: textEditingController,
-                SizedBox(width: 100.0),
+                SizedBox(width: 10.0),
                 Container(
                   margin: const EdgeInsets.all(8.0),
                   child: FlatButton(
@@ -180,7 +272,13 @@ class _ChatPage extends State<ChatPage> {
                         : 'Chat got disconnected',
                     ),),
 
+
+
                 ),
+                FlatButton(onPressed: (){
+
+      _newLocation();
+      }, child: Text("Current Loction")),
 
               ],
             )
@@ -243,6 +341,7 @@ class _ChatPage extends State<ChatPage> {
       print(messages[i].text);}
   }
 
+
   void _sendMessage(String text) async {
     text = 'Looking for Obstacles';
     flutterTts.speak(text);
@@ -271,7 +370,16 @@ class _ChatPage extends State<ChatPage> {
         // Ignore error, but notify state
         setState(() {});
       }
+
     }
+
+
+
+
+      //
+      //   tooltip: 'Get GPS Position',
+      // child: const Icon(Icons.change_circle_outlined),
+
   }
 
 
