@@ -9,11 +9,11 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.blueGrey,
+      backgroundColor:Colors.brown[300],
       appBar: AppBar(
         title:Text('Welcoming page'),
         centerTitle:true,
-        backgroundColor:Colors.grey,
+        backgroundColor:Colors.pink[100],
         elevation:0.0,
       ),
 
@@ -25,7 +25,7 @@ class _WelcomeState extends State<Welcome> {
             Text(
                 'Hello, Welcome to DirecM!',
               style:TextStyle(
-                color:Colors.white,
+                color:Colors.black,
                 letterSpacing: 2.0,
               )
               ),
@@ -40,12 +40,15 @@ class _WelcomeState extends State<Welcome> {
             SizedBox(height:20.0),
 
             // ignore: deprecated_member_use
-            FlatButton.icon(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.brown[800], //background color of button
+                side: BorderSide(width:3, color:Colors.white), //border width and color
+                elevation: 3,),
               onPressed: () {
                 Navigator.pushNamed(context, '/directions');
               },
-              icon:Icon(Icons.add_box),
-              label:Text('Proceed'),
+              child:Text('Proceed'),
 
             ),
           ],

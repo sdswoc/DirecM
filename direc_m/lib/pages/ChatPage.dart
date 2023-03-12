@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -29,10 +30,15 @@ class _Message {
 class _ChatPage extends State<ChatPage> {
   var _latitude = "";
   var _longitude= "";
+  int z = 0;
+
   // var _speed= "";
   // var _address= "";
   bool _buttonPressed = true;
-
+  double a1= 29.864418;
+  double a2=77.900052;
+  final distList = List<int>.filled(0, 0, growable: true); // [0, 0, 0]
+  final dirList = List<String>.filled(0,'',growable:true);
   Future<void> _updatePosition() async{
     Position pos =await _determinePosition();
     List pm= await placemarkFromCoordinates(pos.latitude, pos.longitude);
@@ -44,6 +50,42 @@ class _ChatPage extends State<ChatPage> {
       _longitude =pos.longitude.toString();
       // _speed =pos.speed.toString();
       // _address = pm[0].toString();
+      double b2= double.parse(_longitude);
+      double b1= double.parse(_latitude);
+      double distances= acos(sin(a1)*sin(b1)+cos(a1)*cos(b1)*cos(b2-a2))*6371;
+      int d= distList[distList.length-1] - (distances.toInt());
+
+      // Future.delayed(Duration(milliseconds: 5000));
+      print('distances');
+      print(distances);
+      if ( distances.toInt()  >= distList[distList.length-1] )
+      {
+        // tell ( goforward(b-a) ) ;
+        a1=b1;
+        distList.removeAt(distList.length-1);
+        print('distlist. length');
+        print(distList.length);
+        flutterTts.speak ( 'go ' +dirList[dirList.length-1]) ;
+        Future.delayed(Duration(microseconds: 2000));
+
+
+        dirList.removeAt(dirList.length-1);
+        print(dirList. length);
+
+        // Future.delayed(Duration(microseconds: 15000));
+      }
+      else {
+        z += 1;
+        z = z % 4
+        d;
+        if (z == 0) {
+          flutterTts.speak('go' + d.toString() + ' metres forward');
+          print('yo');
+        }
+        }
+
+
+      // }
 
     });
   }
@@ -52,12 +94,16 @@ class _ChatPage extends State<ChatPage> {
 
     while (_buttonPressed) {
       // do your thing
+      if(distList.length<=0)
+      {
+        break;
+      }
       setState(() {
         _updatePosition();
       });
 
       // wait a second
-      await Future.delayed(Duration(milliseconds: 5000));
+      await Future.delayed(Duration(milliseconds: 2000));
     }
 
 
@@ -88,7 +134,6 @@ class _ChatPage extends State<ChatPage> {
     }
     return await Geolocator.getCurrentPosition();
   }
-  double distanceInMeters = (Geolocator.distanceBetween(29.8638113, 77.8991299, 29.8651142, 77.8999749))/100;
 
   static final clientID = 0;
   BluetoothConnection? connection;
@@ -162,7 +207,7 @@ class _ChatPage extends State<ChatPage> {
             child: Text(
                     (text) {
                   return text;
-                  flutterTts.speak(text);
+                  // flutterTts.speak(text);
 
     }(_message.text.trim()),
             //     style: TextStyle(color: Colors.white)),
@@ -211,11 +256,11 @@ class _ChatPage extends State<ChatPage> {
               //   "Speed:" +_speed,
               //   style: Theme.of(context).textTheme.headline5,
               // ),
-              Text(
-                "Distance:"  +distanceInMeters.toString(),
-                style: Theme.of(context).textTheme.headline5,
-
-              ),
+              // Text(
+              //   "Distance:"  +distanceInMeters.toString(),
+              //   style: Theme.of(context).textTheme.headline5,
+              //
+              // ),
               //
               // const Text('Address: '),
               //
@@ -253,10 +298,12 @@ class _ChatPage extends State<ChatPage> {
                 SizedBox(width: 10.0),
                 Container(
                   margin: const EdgeInsets.all(8.0),
-                  child: FlatButton(
+                  child: ElevatedButton(
                     // controller: textEditingController,
-                    color: Colors.blue,
-                    textColor: Colors.white,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.brown[800], //background color of button
+                      side: BorderSide(width:3, color:Colors.white), //border width and color
+                      elevation: 3,),
                     // enabled: isConnected,
 
                     onPressed:
@@ -275,10 +322,18 @@ class _ChatPage extends State<ChatPage> {
 
 
                 ),
-                FlatButton(onPressed: (){
+                ElevatedButton(onPressed: (){
 
+                  distList.add(1);
+                  distList.add(200);
+                  distList.add(93);
+                  dirList.add('Right');
+                  dirList.add('Left');
+                  dirList.add('');
+                  print('dirlist length');
+                  print( dirList.length);
       _newLocation();
-      }, child: Text("Current Loction")),
+      }, child: Text("Current Location")),
 
               ],
             )
@@ -337,7 +392,7 @@ class _ChatPage extends State<ChatPage> {
     }
     for(var i=0; i<messages.length; i++)  {
       Future.delayed(Duration(milliseconds:5000));
-       flutterTts.speak(messages[i].text);
+       // flutterTts.speak(messages[i].text);
       print(messages[i].text);}
   }
 

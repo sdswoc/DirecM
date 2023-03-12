@@ -40,13 +40,15 @@ class _TestState extends State<Test> {
             SizedBox(height:20.0),
 
             // ignore: deprecated_member_use
-            FlatButton.icon(
+            ElevatedButton(
               onPressed: () {
                 // Navigator.pushNamed(context, '/location');
               },
-              icon:Icon(Icons.add_box),
-              label:Text('Start Testing'),
-
+              style: ElevatedButton.styleFrom(
+                primary: Colors.brown[800], //background color of button
+                side: BorderSide(width:3, color:Colors.white), //border width and color
+                elevation: 3,),
+              child: Text('Guide Me'),
             ),
           ],
         ),

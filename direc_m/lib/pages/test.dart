@@ -23,11 +23,11 @@ class _TestState extends State<Test> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.blueGrey,
+      backgroundColor:Colors.brown[300],
       appBar: AppBar(
         title:Text('Testing page'),
         centerTitle:true,
-        backgroundColor:Colors.grey,
+        backgroundColor:Colors.pink[100],
         elevation:0.0,
       ),
 
@@ -54,7 +54,7 @@ class _TestState extends State<Test> {
             SizedBox(height:20.0),
 
             // ignore: deprecated_member_use
-            FlatButton.icon(
+            ElevatedButton(
 
                 onPressed: () async {
                   final BluetoothDevice? selectedDevice =
@@ -81,8 +81,12 @@ class _TestState extends State<Test> {
 
                 // Navigator.pushNamed(context, '/location');
               },
-              icon:Icon(Icons.add_box),
-              label:Text('Start Testing'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.brown[800], //background color of button
+                side: BorderSide(width:3, color:Colors.white), //border width and color
+                elevation: 3,),
+
+              child:Text('Start Testing'),
 
             ),
           ],
