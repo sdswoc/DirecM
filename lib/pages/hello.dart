@@ -9,16 +9,16 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.brown[300],
+      backgroundColor:Colors.blue[50],
       appBar: AppBar(
         title:Text('Welcoming page'),
         centerTitle:true,
-        backgroundColor:Colors.pink[100],
+        backgroundColor:Colors.pink[200],
         elevation:0.0,
       ),
 
       body: Padding(
-        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
+        padding: EdgeInsets.fromLTRB(70.0, 40.0, 30.0, 0.0),
         child:Column(
            mainAxisAlignment:MainAxisAlignment.start ,
           children:<Widget>[
@@ -32,18 +32,18 @@ class _WelcomeState extends State<Welcome> {
             SizedBox(height:50.0),
             Text('Let us get started!',
                 style:TextStyle(
-                  color:Colors.white,
+                  color:Colors.black,
                   letterSpacing: 2.0,
                 )
             ),
             // ignore: deprecated_member_use
-            SizedBox(height:20.0),
+            SizedBox(height:60.0),
+            SizedBox(width:120.0),
 
             // ignore: deprecated_member_use
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.brown[800], //background color of button
-                side: BorderSide(width:3, color:Colors.white), //border width and color
+                primary: Colors.lightBlueAccent, //background color of button
                 elevation: 3,),
               onPressed: () {
                 Navigator.pushNamed(context, '/directions');

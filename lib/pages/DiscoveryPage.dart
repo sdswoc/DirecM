@@ -1,5 +1,4 @@
 import 'dart:async';
-import'package:direc_m/pages/ChatPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
@@ -62,7 +61,6 @@ class _DiscoveryPage extends State<DiscoveryPage> {
     });
   }
 
-  // @TODO . One day there should be `_pairDevice` on long tap on something... ;)
 
   @override
   void dispose() {
@@ -75,17 +73,22 @@ class _DiscoveryPage extends State<DiscoveryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:Colors.blue[50],
+
       appBar: AppBar(
         title: isDiscovering
             ? Text('Discovering devices')
             : Text('Discovered devices'),
+        backgroundColor:Colors.pink[200],
+
         actions: <Widget>[
+
           isDiscovering
               ? FittedBox(
             child: Container(
               margin: new EdgeInsets.all(16.0),
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.brown[300]!),
               ),
             ),
           )
