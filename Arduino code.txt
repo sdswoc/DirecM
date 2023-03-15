@@ -1,0 +1,50 @@
+int echo=9;
+int trig=8;
+
+int val;
+void setup() {
+  Serial.begin(9600);
+ pinMode(trig,OUTPUT);
+pinMode(echo,INPUT);
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(20);
+  digitalWrite(trig, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  int duration = pulseIn(echo, HIGH);
+  // Calculating the distance
+  int distance = duration * 0.034 / 2;
+  if (Serial.available() > 0) {
+    if(distance<=25 && distance >0)
+    {
+    String message = (String) "detected" +distance+ " centimetres ahead";
+          
+    Serial.println(message);
+    }
+        delay(5000);
+
+  }
+
+  // switch (val) {
+  //   case '1':
+  //     String message =(String)"Distance =" +distance+ "  front";
+
+  //     Serial.println(message)1
+  //    break;
+
+  //   case '2':
+  //    break;
+  
+      
+
+  // }
+
+}
