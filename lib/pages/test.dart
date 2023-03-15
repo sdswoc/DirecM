@@ -1,17 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import'package:direc_m/pages/DiscoveryPage.dart';
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:scoped_model/scoped_model.dart';
 import'package:direc_m/pages/ChatPage.dart';
-
-
-import './DiscoveryPage.dart';
-// import './SelectBondedDevicePage.dart';
 class Test extends StatefulWidget {
 
   @override
@@ -23,11 +13,11 @@ class _TestState extends State<Test> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.brown[300],
+      backgroundColor:Colors.blue[50],
       appBar: AppBar(
         title:Text('Testing page'),
         centerTitle:true,
-        backgroundColor:Colors.pink[100],
+        backgroundColor:Colors.pink[200],
         elevation:0.0,
       ),
 
@@ -39,21 +29,19 @@ class _TestState extends State<Test> {
             Text(
                 'Let us test DirecM!',
                 style:TextStyle(
-                  color:Colors.white,
+                  color:Colors.black,
                   letterSpacing: 2.0,
                 )
             ),
             SizedBox(height:50.0),
             Text('press this button to get started',
                 style:TextStyle(
-                  color:Colors.white,
+                  color:Colors.black,
                   letterSpacing: 2.0,
                 )
             ),
-            // ignore: deprecated_member_use
             SizedBox(height:20.0),
 
-            // ignore: deprecated_member_use
             ElevatedButton(
 
                 onPressed: () async {
@@ -79,11 +67,10 @@ class _TestState extends State<Test> {
                     print('Discovery -> no device selected');
                   }
 
-                // Navigator.pushNamed(context, '/location');
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.brown[800], //background color of button
-                side: BorderSide(width:3, color:Colors.white), //border width and color
+                primary: Colors.lightBlueAccent, //background color of button
+                 //border width and color
                 elevation: 3,),
 
               child:Text('Start Testing'),
@@ -104,4 +91,3 @@ class _TestState extends State<Test> {
     );
   }
 }
-// TODO Implement this library.

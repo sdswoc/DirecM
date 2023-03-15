@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-
+import'package:direc_m/pages/directions.dart' as globals;
 
 class ChatPage extends StatefulWidget {
   final BluetoothDevice server;
@@ -30,15 +29,13 @@ class _Message {
 class _ChatPage extends State<ChatPage> {
   var _latitude = "";
   var _longitude= "";
-  int z = 0;
-
-  // var _speed= "";
-  // var _address= "";
   bool _buttonPressed = true;
-  double a1= 29.864418;
-  double a2=77.900052;
-  final distList = List<int>.filled(0, 0, growable: true); // [0, 0, 0]
+  double a1= 29.8649295;
+  double a2=77.9003944;
+  final distList = List<int>.filled(0, 0, growable: true);
   final dirList = List<String>.filled(0,'',growable:true);
+  int z=0;
+//to update position via gps
   Future<void> _updatePosition() async{
     Position pos =await _determinePosition();
     List pm= await placemarkFromCoordinates(pos.latitude, pos.longitude);
@@ -48,52 +45,42 @@ class _ChatPage extends State<ChatPage> {
     {
       _latitude =pos.latitude.toString();
       _longitude =pos.longitude.toString();
-      // _speed =pos.speed.toString();
-      // _address = pm[0].toString();
+
       double b2= double.parse(_longitude);
       double b1= double.parse(_latitude);
-      double distances= acos(sin(a1)*sin(b1)+cos(a1)*cos(b1)*cos(b2-a2))*6371;
-      int d= distList[distList.length-1] - (distances.toInt());
+      int d= distList[distList.length-1] - (distance(a1,a2,b1,b2).toInt());
 
-      // Future.delayed(Duration(milliseconds: 5000));
       print('distances');
-      print(distances);
-      if ( distances.toInt()  >= distList[distList.length-1] )
+      print(distance(a1,a2,b1,b2));
+      if ( distance(a1,a2,b1,b2).toInt()  >= distList[distList.length-1] )
       {
-        // tell ( goforward(b-a) ) ;
         a1=b1;
         distList.removeAt(distList.length-1);
         print('distlist. length');
         print(distList.length);
-        flutterTts.speak ( 'go ' +dirList[dirList.length-1]) ;
+        _speak ( 'go ' +dirList[dirList.length-1]) ;
         Future.delayed(Duration(microseconds: 2000));
 
 
         dirList.removeAt(dirList.length-1);
         print(dirList. length);
 
-        // Future.delayed(Duration(microseconds: 15000));
       }
       else {
         z += 1;
-        z = z % 4
-        d;
-        if (z == 0) {
-          flutterTts.speak('go' + d.toString() + ' metres forward');
+        z = z % 4;
+                if (z == 0) {
+          _speak('go' + d.toString() + ' metres forward');
           print('yo');
         }
         }
-
-
-      // }
-
     });
   }
+  //calls updatePosition infinite times
   void _newLocation() async {
 
 
     while (_buttonPressed) {
-      // do your thing
       if(distList.length<=0)
       {
         break;
@@ -102,7 +89,6 @@ class _ChatPage extends State<ChatPage> {
         _updatePosition();
       });
 
-      // wait a second
       await Future.delayed(Duration(milliseconds: 2000));
     }
 
@@ -110,15 +96,13 @@ class _ChatPage extends State<ChatPage> {
   }
 
 
-
+//uses gps to identify latitude and longitude
   Future<Position> _determinePosition() async{
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    // if(!serviceEnabled){
-    //   return Future.error('Location permissions are disabled.');
-    // }
+
     permission = await Geolocator.checkPermission();
     if(permission==LocationPermission.denied)
     {
@@ -138,12 +122,12 @@ class _ChatPage extends State<ChatPage> {
   static final clientID = 0;
   BluetoothConnection? connection;
 
+  //input from arduino is added to a list
   List<_Message> messages = List<_Message>.empty(growable: true);
   String _messageBuffer = '';
 
-  final TextEditingController textEditingController =
-  new TextEditingController();
-  final ScrollController listScrollController = new ScrollController();
+  final TextEditingController textEditingController = TextEditingController();
+  final ScrollController listScrollController = ScrollController();
 
   bool isConnecting = true;
 
@@ -152,6 +136,7 @@ class _ChatPage extends State<ChatPage> {
   bool isDisconnecting = false;
 
   @override
+
   void initState() {
     super.initState();
 
@@ -164,12 +149,7 @@ class _ChatPage extends State<ChatPage> {
       });
 
       connection!.input!.listen(_onDataReceived).onDone(() {
-        // Example: Detect which side closed the connection
-        // There should be `isDisconnecting` flag to show are we are (locally)
-        // in middle of disconnecting process, should be set before calling
-        // `dispose`, `finish` or `close`, which all causes to disconnect.
-        // If we except the disconnection, `onDone` should be fired as result.
-        // If we didn't except this (no flag set), it means closing by remote.
+
         if (isDisconnecting) {
           print('Disconnecting locally!');
         } else {
@@ -200,25 +180,23 @@ class _ChatPage extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+
+
     final List<Row> list = messages.map((_message) {
+
       return Row(
         children: <Widget>[
+
           Container(
             child: Text(
                     (text) {
                   return text;
                   // flutterTts.speak(text);
+                  // flutterTts.speak(text);
 
-    }(_message.text.trim()),
-            //     style: TextStyle(color: Colors.white)),
-            // padding: EdgeInsets.all(12.0),
-            // margin: EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
-            // width: 222.0,
-            // decoration: BoxDecoration(
-            //     color:
-          //       _message.whom == clientID ? Colors.blueAccent : Colors.grey,
-          //       borderRadius: BorderRadius.circular(7.0)),
-          // ),
+    }
+    (_message.text.trim()),
+
             ),
           ),
         ],
@@ -230,19 +208,27 @@ class _ChatPage extends State<ChatPage> {
 
     final serverName = widget.server.name ?? "Unknown";
     return Scaffold(
+      backgroundColor:Colors.blue[50],
+
       appBar: AppBar(
+          backgroundColor:Colors.pink[200],
+
           title: (isConnecting
-              ? Text('Connecting to Module ....')
+              ? Text('Connecting to Module ')
               : isConnected
-              ? Text('DirecM Testing Page')
+              ? Text('DirecM')
               : Text('' + serverName))),
-      body: Center(
+
+    body: Padding(
+    padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
         child: Column(
           children: <Widget>[
 
-              const Text(
-              'Your current location is:',
+               Text(
+              " Press both the buttons at the bottom of the page and it will guide you through your path, it will speak the distance you have to go, tell you when to turn as well as detect obstacles in your way so you can have a safe walk,Let's get you going",
             ),
+             Text(
+              'Your current location is:'),
               Text(
                 "Latitude: " +_latitude,
                 style: Theme.of(context).textTheme.headline5,
@@ -252,89 +238,53 @@ class _ChatPage extends State<ChatPage> {
                 style: Theme.of(context).textTheme.headline5,
 
               ),
-              // Text(
-              //   "Speed:" +_speed,
-              //   style: Theme.of(context).textTheme.headline5,
-              // ),
-              // Text(
-              //   "Distance:"  +distanceInMeters.toString(),
-              //   style: Theme.of(context).textTheme.headline5,
-              //
-              // ),
-              //
-              // const Text('Address: '),
-              //
-              //
-              // Text(_address),
+            SizedBox(
+                width: 200,
+                height: 60,
+            ),
 
-              // child: ListView(
-              //     padding: const EdgeInsets.all(12.0),
-              //     controller: listScrollController,
-              //     children: list
-              //
-              // ),
-              SizedBox(height:300.0),
+              SizedBox(height:200.0),
             Row(
+
               children: <Widget>[
-                // Flexible(
-                //   child: Container(
-                //     margin: const EdgeInsets.only(left: 16.0),
-                //     child: TextField(
-                //       style: const TextStyle(fontSize: 15.0),
-                //       // controller: textEditingController,
-                //       decoration: InputDecoration.collapsed(
-                //         hintText: isConnecting
-                //             ? 'Wait until connected...'
-                //             : isConnected
-                //             ? 'Type your message...'
-                //             : 'Chat got disconnected',
-                //         hintStyle: const TextStyle(color: Colors.grey),
-                //       ),
-                //       // enabled: isConnected,
-                //     ),
-                //   ),
-                // ),
-                // controller: textEditingController,
-                SizedBox(width: 10.0),
-                Container(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    // controller: textEditingController,
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.brown[800], //background color of button
-                      side: BorderSide(width:3, color:Colors.white), //border width and color
-                      elevation: 3,),
-                    // enabled: isConnected,
 
-                    onPressed:
+                SizedBox(width: 20.0),
 
 
+            Container(
+            margin: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.lightBlueAccent, //background color of button
+                elevation: 3,),
+
+                 onPressed:
                     isConnected
                         ? () => _sendMessage(textEditingController.text)
                         : null,
                     child: Text(isConnecting
-                        ? 'Wait until connected...'
+                        ? 'Wait until connected'
+
                         : isConnected
-                        ? '...'
+                        ? 'Detect Obstacles'
                         : 'Chat got disconnected',
                     ),),
-
-
-
-                ),
-                ElevatedButton(onPressed: (){
+             ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.lightBlueAccent, //background color of button
+                      elevation: 3,),onPressed: (){
 
                   distList.add(1);
-                  distList.add(200);
-                  distList.add(93);
+                  distList.add(193);
+                  distList.add(28);
                   dirList.add('Right');
                   dirList.add('Left');
-                  dirList.add('');
                   print('dirlist length');
                   print( dirList.length);
       _newLocation();
-      }, child: Text("Current Location")),
-
+      },
+                    child: Text("Current Location")),
               ],
             )
           ],
@@ -390,16 +340,16 @@ class _ChatPage extends State<ChatPage> {
           0, _messageBuffer.length - backspacesCounter)
           : _messageBuffer + dataString);
     }
+    //traverses the output from arduino into list
     for(var i=0; i<messages.length; i++)  {
       Future.delayed(Duration(milliseconds:5000));
-       // flutterTts.speak(messages[i].text);
+       _speak(messages[i].text);
       print(messages[i].text);}
   }
-
-
-  void _sendMessage(String text) async {
+  //input from user
+   void _sendMessage(String text) async {
     text = 'Looking for Obstacles';
-    flutterTts.speak(text);
+    _speak(text);
     textEditingController.clear();
 
     if (text.length > 0) {
@@ -417,9 +367,6 @@ class _ChatPage extends State<ChatPage> {
               listScrollController.position.maxScrollExtent,
               duration: Duration(milliseconds: 500),
               curve: Curves.easeOut);
-
-
-
         });
       } catch (e) {
         // Ignore error, but notify state
@@ -428,14 +375,24 @@ class _ChatPage extends State<ChatPage> {
 
     }
 
-
-
-
-      //
-      //   tooltip: 'Get GPS Position',
-      // child: const Icon(Icons.change_circle_outlined),
-
   }
+  void initSetting() async {
+    await flutterTts.setVolume(globals.volume);
+    await flutterTts.setPitch(globals.pitch);
+    await flutterTts.setSpeechRate(globals.speechRate);
+  }
+  double distance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;    // Math.PI / 180
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+        c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p))/2;
 
+    return 12742000 *asin(sqrt(a)); // 2 * R; R = 6371 km
+  }
+  void _speak(String text) async{
+    initSetting();
+    await flutterTts.speak(text);
+  }
 
 }
