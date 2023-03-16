@@ -40,4 +40,7 @@ Connect your module to your laptop and upload the arduino code on it.
 After setting up the app and the arduino you are good to go, just select the hc-05 module in the list of discoverable devices and use the 3 buttons on the follow up page to help you navigate, one button detects the obstacle near you using real-time object detection, another detects the output from the arduino which tells you the distance of obstacles in your path , and the last button detects your current location using gps and helps in guiding you with different routes.
 You will get the audio output of you location, the distance you have to go, when to take a turn, when an obstacle near you and detects the object as well.
 
+### ScreenShots
+<img src="https://user-images.githubusercontent.com/122573982/225760854-e8a81e6b-a772-4b76-a9a9-37d781e06085.jpeg" width="150" height="280">  <img src="https://user-images.githubusercontent.com/122573982/225760833-7b9c113e-ccd7-4528-8e3c-c3d31c331b7b.jpeg" width="150" height="280"> <img src="https://user-images.githubusercontent.com/122573982/225760806-47177d77-2597-4cf9-b1e8-e51d75b3a714.jpeg" width="150" height="280">  <img src="https://user-images.githubusercontent.com/122573982/225760793-dcda27f9-07a3-4235-9f53-584e85f61fd5.jpeg" width="150" height="280">   <img src="https://user-images.githubusercontent.com/122573982/225760770-192e2a97-2f29-457c-ab73-c07f831a452a.jpeg" width="150" height="280">  <img src="https://user-images.githubusercontent.com/122573982/225760609-9d0f7881-067f-48f1-a1a7-68a2264fde6d.jpeg" width="150" height="280">
+
 
