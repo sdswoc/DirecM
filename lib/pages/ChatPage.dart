@@ -49,7 +49,6 @@ class _ChatPage extends State<ChatPage> {
 
 //to update position via gps
   Future<void> _updatePosition() async {
-  
     await locationPosition();
 
     setState(() {
@@ -58,7 +57,8 @@ class _ChatPage extends State<ChatPage> {
 
       double b2 = double.parse(_longitude);
       double b1 = double.parse(_latitude);
-      int d =distList[distList.length - 1] - (distance(a1, a2, b1, b2).toInt());
+      int d =
+          distList[distList.length - 1] - (distance(a1, a2, b1, b2).toInt());
 
       print('distances');
       print(distance(a1, a2, b1, b2));
@@ -108,7 +108,6 @@ class _ChatPage extends State<ChatPage> {
           a1 = double.parse(_latitude);
           print(a1 + a2);
           whetherGPSInitialisedBefore = true;
-)
         } else {
           _updatePosition();
         }
